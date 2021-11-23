@@ -71,6 +71,20 @@ app.put("/employees/:id", async (req, res) => {
 
 // delete an employee
 
+app.delete("/employees/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleteEmployee = await pool.query(
+      "DELETE FROM employees WHERE employee_id = $1",
+      [id]
+    );
+    res.json(`Employee with the ID '${id}' was deleted.`);
+  } catch (error) {
+    console.error(err.message);
+  }
+});
+
+
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
