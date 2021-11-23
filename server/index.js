@@ -15,7 +15,7 @@ app.use(express.json()); //req.body
 app.post("/create", async (req, res) => {
   try {
     const { name, age, country, position, wage} = req.body;
-    
+
     const newEmployee = await pool.query(
       "INSERT INTO employees (name, age, country, position, wage) VALUES($1,$2,$3,$4,$5) RETURNING *",
     [name, age, country, position, wage],
@@ -27,6 +27,14 @@ app.post("/create", async (req, res) => {
 });
 
 //get all employees
+app.get("/employees", async (req, res) => {
+  try {
+    const allEmployees = await pool.query("SELECT * FROM employees");
+    res.json(allEmployees.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
 
 // get an employee
 
