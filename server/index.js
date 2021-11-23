@@ -14,12 +14,8 @@ app.use(express.json()); //req.body
 
 app.post("/create", async (req, res) => {
   try {
-    const name = req.body.name;
-    const age = req.body.age;
-    const country = req.body.country;
-    const position = req.body.position;
-    const wage = req.body.wage;
-
+    const { name, age, country, position, wage} = req.body;
+    
     const newEmployee = await pool.query(
       "INSERT INTO employees (name, age, country, position, wage) VALUES($1,$2,$3,$4,$5) RETURNING *",
     [name, age, country, position, wage],
