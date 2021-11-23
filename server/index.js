@@ -54,6 +54,21 @@ app.get("/employees/:id", async (req, res) => {
 
 // update an employee
 
+app.put("/employees/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, age, country, position, wage } = req.body;
+    const updateEmployee = await pool.query(
+      "UPDATE employees SET name = $1, age = $2, country = $3, position = $4, wage = $5 WHERE employee_id = $6",
+      [name, age, country, position, wage, id]
+    );
+
+    res.json(`Employee with the ID '${id}' was updated.`);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
 // delete an employee
 
 const PORT = process.env.PORT || 3001;
