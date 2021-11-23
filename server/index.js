@@ -30,6 +30,17 @@ app.post("/create", async (req, res) => {
   }
 });
 
+//get all employees
+
+// get an employee
+
+// update an employee
+
+// delete an employee
+
+
+
+
 const PORT = process.env.PORT || 3001
 
 app.listen(PORT, ()=>{
