@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 
 function EmployeeForm() {
@@ -8,6 +9,13 @@ function EmployeeForm() {
     const [position, setPosition] = useState("");
     const [wage, setWage] = useState(0);
     
+    const addEmployee = () =>{
+      const employee = { name, age, country, position, wage }
+      axios.post('http://localhost:3001/create', employee).then(()=>{
+        console.log('success')
+      })
+    }
+     
     return (
         <form class="w-full max-w-sm mt-5">
       <div class="md:flex md:items-center mb-6">
@@ -88,7 +96,7 @@ function EmployeeForm() {
       <div class="md:flex md:items-center">
         <div class="md:w-1/3"></div>
         <div class="md:w-2/3">
-          <button class="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">
+          <button onClick={addEmployee} class="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">
             Add Employee
           </button>
         </div>
