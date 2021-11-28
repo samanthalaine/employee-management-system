@@ -3,14 +3,20 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 function EmployeeTable() {
-const [employeeList, setEmployeeList] = useState([])
+const [employees, setEmployees] = useState([])
 
 
   const getEmployees = async () => {
     await axios.get("http://localhost:3001/employees").then((res) => {
-      setEmployeeList(res.data);
+      setEmployees(res.data);
     });
   };
+
+  const deleteEmployee = async (id) => {
+      await axios.delete(`http://localhost:3001/employees/${id}`)
+      setEmployees(employees.filter((employee) => employee.employee_id !== id)
+      )
+  }
 
   
   return (
@@ -110,8 +116,8 @@ const [employeeList, setEmployeeList] = useState([])
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-              {employeeList.map((employee) => (
-                <tr>
+              {employees.map((employee) => (
+                <tr key={employee.employee_id}>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                       <div class="ml-4">
@@ -132,6 +138,9 @@ const [employeeList, setEmployeeList] = useState([])
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     ${employee.wage}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <button onClick={() =>deleteEmployee(employee.employee_id)} class="shadow bg-red-500 hover:bg-red-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">Delete</button>
                   </td>
                 </tr>
                 ))}
