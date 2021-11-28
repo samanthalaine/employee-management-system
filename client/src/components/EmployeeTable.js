@@ -1,9 +1,24 @@
 import React from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 function EmployeeTable() {
+const [employeeList, setEmployeeList] = useState([])
+
+
+  const getEmployees = async () => {
+    await axios.get("http://localhost:3001/employees").then((res) => {
+      setEmployeeList(res.data);
+    });
+  };
+
+  
   return (
     <div class="flex flex-col">
+      
+
       <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          
         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
           <div
             class="
@@ -13,6 +28,12 @@ function EmployeeTable() {
           sm:rounded-lg
         "
           >
+              <button
+        class="shadow bg-purple-500  ml-12 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+        onClick={getEmployees}
+      >
+        Show Employees
+      </button>
             <table class="min-w-full divide-y">
               <thead class="bg-gray-50">
                 <tr>
@@ -89,7 +110,6 @@ function EmployeeTable() {
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                
                 <tr>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
@@ -112,7 +132,6 @@ function EmployeeTable() {
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     $150,000
                   </td>
-                  
                 </tr>
               </tbody>
             </table>
