@@ -17,6 +17,7 @@ function EmployeeForm() {
   };
 
   return (
+    <>
     <form onSubmit={addEmployee} class="w-full max-w-sm mt-5">
       <div class="md:flex md:items-center mb-6">
         <div class="md:w-1/3">
@@ -102,6 +103,7 @@ function EmployeeForm() {
         </div>
       </div>
     </form>
+    </>
   );
 }
 

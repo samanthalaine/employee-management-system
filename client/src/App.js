@@ -1,10 +1,13 @@
 import EmployeeForm from "./components/EmployeeForm";
+import EmployeeTable from "./components/EmployeeTable";
 
 function App() {
 
   return (
     <>
     <EmployeeForm/>
+    <br/>
+    <EmployeeTable/>
     </>
   );
 }
