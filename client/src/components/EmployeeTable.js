@@ -110,29 +110,31 @@ const [employeeList, setEmployeeList] = useState([])
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
+              {employeeList.map((employee) => (
                 <tr>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                       <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900">
-                          Riley Grant
+                          {employee.name}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-500">33</div>
+                    <div class="text-sm text-gray-500">{employee.age}</div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-500">USA</div>
+                    <div class="text-sm text-gray-500">{employee.country}</div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    Software Engineer
+                    {employee.position}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    $150,000
+                    ${employee.wage}
                   </td>
                 </tr>
+                ))}
               </tbody>
             </table>
           </div>
