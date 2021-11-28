@@ -1,8 +1,12 @@
-import {useState} from 'react'
+import { useState } from 'react'
 
 
 function EmployeeForm() {
-    const [name, setName] = useState('')
+    const [name, setName] = useState("")
+    const [age, setAge] = useState(0);
+    const [country, setCountry] = useState("");
+    const [position, setPosition] = useState("");
+    const [wage, setWage] = useState(0);
     
     return (
         <form class="w-full max-w-sm mt-5">
@@ -17,6 +21,7 @@ function EmployeeForm() {
             class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
             type="text"
             placeholder="Name"
+            onChange={(e) =>setName(e.target.value)}
           />
         </div>
       </div>
@@ -31,6 +36,7 @@ function EmployeeForm() {
             class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
             type="number"
             placeholder="Age"
+            onChange={(e) =>setAge(e.target.value)}
           />
         </div>
       </div>
@@ -45,6 +51,7 @@ function EmployeeForm() {
             class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
             type="text"
             placeholder="Country"
+            onChange={(e) =>setCountry(e.target.value)}
           />
         </div>
       </div>
@@ -59,6 +66,7 @@ function EmployeeForm() {
             class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
             type="text"
             placeholder="Position"
+            onChange={(e) =>setPosition(e.target.value)}
           />
         </div>
       </div>
@@ -73,6 +81,7 @@ function EmployeeForm() {
             class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
             type="number"
             placeholder="Wage"
+            onChange={(e) =>setWage(e.target.value)}
           />
         </div>
       </div>
