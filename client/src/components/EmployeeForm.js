@@ -13,7 +13,7 @@ function EmployeeForm({ setEmployeeList, employeeList }) {
     e.preventDefault();
     axios.post("http://localhost:3001/create", employee).then(() => {
       
-      
+      console.log("success")
     });
     alert('Employee added!')
   };

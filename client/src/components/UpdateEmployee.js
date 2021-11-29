@@ -9,17 +9,18 @@ export default function UpdateEmployee({ employee }) {
   const [position, setPosition] = useState(employee.position);
   const [wage, setWage] = useState(employee.wage);
 
-  
-
-  const update = async (e) => {
-    const updatedEmployee = { name, age, country, position, wage };
+  const editEmployee = async (e) => {
+    const updatedInfo = { name, age, country, position, wage };
     e.preventDefault();
     await axios
-      .put(`http://localhost:3001/employees/${employee.employee_id}`, updatedEmployee)
+      .put(
+        `http://localhost:3001/employees/${employee.employee_id}`,
+        updatedInfo
+      )
       .then((res) => {
         console.log("success");
       });
-      window.location = "/employeetable";
+    window.location = "/employeetable";
   };
 
   return (
@@ -38,7 +39,7 @@ export default function UpdateEmployee({ employee }) {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                   <h3 className="text-3xl font-semibold">
-                    Update Employee's Details
+                    {`Edit ${employee.name}'s Details`}
                   </h3>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -63,6 +64,7 @@ export default function UpdateEmployee({ employee }) {
                       type="text"
                       placeholder="Name"
                       onChange={(e) => setName(e.target.value)}
+                      value={name}
                     />
                   </div>
                   <div class="mb-4">
@@ -77,6 +79,7 @@ export default function UpdateEmployee({ employee }) {
                       type="number"
                       placeholder="Age"
                       onChange={(e) => setAge(e.target.value)}
+                      value={age}
                     />
                   </div>
                   <div class="mb-4">
@@ -91,6 +94,7 @@ export default function UpdateEmployee({ employee }) {
                       type="text"
                       placeholder="Country"
                       onChange={(e) => setCountry(e.target.value)}
+                      value={country}
                     />
                   </div>
                   <div class="mb-4">
@@ -105,6 +109,7 @@ export default function UpdateEmployee({ employee }) {
                       type="text"
                       placeholder="Position"
                       onChange={(e) => setPosition(e.target.value)}
+                      value={position}
                     />
                   </div>
                   <div class="mb-4">
@@ -119,6 +124,7 @@ export default function UpdateEmployee({ employee }) {
                       type="number"
                       placeholder="Wage"
                       onChange={(e) => setWage(e.target.value)}
+                      value={wage}
                     />
                   </div>
                 </form>
@@ -127,14 +133,21 @@ export default function UpdateEmployee({ employee }) {
                   <button
                     className="bg-red-600 text-white active:bg-red-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={() => {
+                      setShowModal(false);
+                      setName(employee.name);
+                      setAge(employee.age);
+                      setCountry(employee.country);
+                      setPosition(employee.position);
+                      setWage(employee.wage);
+                    }}
                   >
                     Close
                   </button>
                   <button
                     className="bg-blue-600 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={(e) => update(e)}
+                    onClick={(e) => editEmployee(e)}
                   >
                     Save Changes
                   </button>
