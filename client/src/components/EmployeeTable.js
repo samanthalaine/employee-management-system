@@ -137,7 +137,8 @@ function EmployeeTable() {
                         {employee.position}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        ${employee.wage}
+                        
+                        ${employee.wage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <UpdateEmployee employee={employee}/>
