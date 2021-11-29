@@ -140,7 +140,7 @@ function EmployeeTable() {
                         ${employee.wage}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <UpdateEmployee />
+                        <UpdateEmployee employee={employee}/>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <button
