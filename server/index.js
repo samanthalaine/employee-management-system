@@ -79,7 +79,7 @@ app.delete("/employees/:id", async (req, res) => {
       [id]
     );
     res.json(`Employee with the ID '${id}' was deleted.`);
-  } catch (error) {
+  } catch (err) {
     console.error(err.message);
   }
 });
@@ -92,4 +92,3 @@ app.listen(PORT, () => {
 });
 
 
-//test
