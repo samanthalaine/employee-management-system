@@ -7,11 +7,15 @@ import UpdateEmployee from "./UpdateEmployee";
 function EmployeeTable() {
   const [employeeList, setEmployeeList] = useState([]);
 
-  const getEmployees = () => {
-    axios.get("http://localhost:3001/employees").then((res) => {
-      setEmployeeList(res.data);
-    });
-  };
+
+  useEffect(() => {
+    const getEmployees = async () => {
+      await axios.get("http://localhost:3001/employees").then((res) => {
+        setEmployeeList(res.data);
+      });
+    };
+    getEmployees();
+  }, []);
 
   const deleteEmployee = (id) => {
     axios.delete(`http://localhost:3001/employees/${id}`);
@@ -22,11 +26,6 @@ function EmployeeTable() {
 
   return (
     <>
-      <EmployeeForm
-        setEmployeeList={setEmployeeList}
-        employeeList={employeeList}
-        
-      />
       <br />
       <div class="flex flex-col">
         <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -39,12 +38,6 @@ function EmployeeTable() {
           sm:rounded-lg
         "
             >
-              <button
-                class="shadow bg-purple-500  ml-12 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-                onClick={getEmployees}
-              >
-                View Employees
-              </button>
               <table class="min-w-full divide-y">
                 <thead class="bg-gray-50">
                   <tr>
@@ -122,7 +115,7 @@ function EmployeeTable() {
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                   {employeeList.map((employee) => (
-                    <tr key={employee.employee_id }>
+                    <tr key={employee.employee_id}>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
                           <div class="ml-4">
@@ -147,7 +140,7 @@ function EmployeeTable() {
                         ${employee.wage}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <UpdateEmployee/>
+                        <UpdateEmployee />
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <button
