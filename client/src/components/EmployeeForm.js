@@ -12,13 +12,17 @@ function EmployeeForm({ setEmployeeList, employeeList }) {
     const employee = { name, age, country, position, wage };
     e.preventDefault();
     axios.post("http://localhost:3001/create", employee).then(() => {
-      //setEmployeeList([...employeeList, employee]);
+      
       
     });
+    alert('Employee added!')
   };
+
+
 
   return (
     <>
+    
       <form onSubmit={addEmployee} class="w-full max-w-sm mt-5">
         <div class="md:flex md:items-center mb-6">
           <div class="md:w-1/3">
@@ -104,6 +108,7 @@ function EmployeeForm({ setEmployeeList, employeeList }) {
           </div>
         </div>
       </form>
+      
     </>
   );
 }
