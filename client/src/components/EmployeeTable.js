@@ -11,7 +11,7 @@ function EmployeeTable() {
   useEffect(() => {
     const getEmployees = async () => {
       await axios.get("http://localhost:3001/employees").then((res) => {
-        setEmployeeList(res.data);
+        setEmployeeList(res.data.sort((a, b) => a.name.localeCompare(b.name)));
       });
     };
     getEmployees();
