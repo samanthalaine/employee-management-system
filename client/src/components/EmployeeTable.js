@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import EmployeeForm from "./EmployeeForm";
+import UpdateEmployee from "./UpdateEmployee";
 
 function EmployeeTable() {
   const [employeeList, setEmployeeList] = useState([]);
@@ -144,6 +145,9 @@ function EmployeeTable() {
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         ${employee.wage}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <UpdateEmployee/>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <button
