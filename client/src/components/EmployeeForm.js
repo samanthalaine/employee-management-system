@@ -27,7 +27,7 @@ function EmployeeForm({ setEmployeeList, employeeList }) {
           <strong class="font-bold">{"Success! "}</strong>
           <span class="block sm:inline">New employee was added.</span>
           <span
-            onClick={() => setShowAlert(false)}
+            onClick={setTimeout(() => {setShowAlert(false)}, 4000)}
             class="absolute font-bold text-xl top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
           >
             ×
