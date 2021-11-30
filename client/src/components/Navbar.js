@@ -35,7 +35,7 @@ function Navbar() {
           onClick={() => {
             showMenu();
           }}
-          class="text-white inline-flex p-3 hover:bg-gray-900 rounded lg:hidden ml-auto hover:text-white outline-none nav-toggler"
+          class="text-white inline-flex p-3 hover:bg-white rounded lg:hidden ml-auto hover:text-purple-700 outline-none nav-toggler"
           data-target="#navigation"
         >
           <svg
