@@ -1,10 +1,10 @@
 # Workflow
 
-![homepage](https://media.discordapp.net/attachments/887887430475186176/915334371433664592/unknown.png?width=917&height=501)
+![homepage](https://media.discordapp.net/attachments/887887430475186176/916054586048020500/unknown.png?width=1109&height=615)
 
 ## About
 
-This project is an employee management system for an HR department. I had fun building this out, as I wanted to enhance my understanding of PostgreSQL as well as improve my styling skills with Tailwind. Currently I am working on implementing a login/signup feature, and then it will be deployed. Stay tuned to see the latest version of this project! 
+This project is an employee management system for a fictional tech company called TechWorks. I had fun building this out, as I wanted to enhance my understanding of PostgreSQL as well as improve my styling skills with Tailwind. I used Auth0 for the login/signup. 
 
 ## Technologies
 - React
@@ -13,6 +13,7 @@ This project is an employee management system for an HR department. I had fun bu
 - Express
 - PostgreSQL
 - Tailwind CSS
+- Auth0
 
 ## Features
 - Add a new employee
@@ -22,4 +23,4 @@ This project is an employee management system for an HR department. I had fun bu
 
 ## Live Site
 
-Coming Soon
+https://workflow-site.netlify.app/
