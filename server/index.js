@@ -9,6 +9,10 @@ dotenv.config();
 app.use(cors());
 app.use(express.json()); //req.body
 
+app.get("/", (req, res)=>{
+  res.send('Hello!');
+})
+
 //create an employee
 
 app.post("/create", async (req, res) => {
