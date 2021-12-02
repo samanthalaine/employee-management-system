@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 
-function EmployeeForm({ setEmployeeList, employeeList }) {
+function EmployeeForm() {
   const [name, setName] = useState("");
   const [age, setAge] = useState(0);
   const [country, setCountry] = useState("");
@@ -27,8 +27,10 @@ function EmployeeForm({ setEmployeeList, employeeList }) {
           <strong class="font-bold">{"Success! "}</strong>
           <span class="block sm:inline">New employee was added.</span>
           <span
-            onClick={setTimeout(() => {setShowAlert(false)}, 4000)}
-            class="absolute font-bold text-xl top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
+            onClick={setTimeout(() => {
+              setShowAlert(false);
+            }, 3000)}
+            class="absolute font-semibold text-xl top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
           >
             ×
           </span>

@@ -1,24 +1,33 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
-function Home() {
-  const { loginWithRedirect, logout, user, isLoading, isAuthenticated } = useAuth0();
 
-  
+function Home() {
+  const { loginWithRedirect, logout, user, isLoading } = useAuth0();
 
   return (
     <section class="relative">
       <div class="container flex flex-col-reverse lg:flex-row items-center gap-12 mt-14 lg:mt-28">
         <div class="flex flex-1 flex-col items-center lg:items-start">
-          <h2 class="text-purple-600 font-bold text-3xl ml-3 md:text-4 lg:text-5xl text-center lg:text-left mb-6">
-            Employee management made simple
-          </h2>
-          <p class="text-blue-500 font-bold text-lg text-center ml-3 lg:text-left mb-6">
-            A clean and simple interface to organize your employees. Try it for
-            free.
-          </p>
+          {!user && (
+            <h2 class="text-purple-600 font-bold text-3xl ml-3 md:text-4 lg:text-5xl text-center lg:text-left mb-6">
+              Employee management made simple.
+            </h2>
+          )}
+
+          {!user && (
+            <p class="text-blue-500 font-bold text-lg text-center ml-3 lg:text-left mb-6">
+              Log in to use TechWorks employee management system.
+            </p>
+          )}
+          {user && (
+            <h2 class="text-blue-600 font-bold text-2xl ml-3 md:text-4 lg:text-5xl text-center lg:text-left mb-6">
+              Welcome! You are currently logged in as{" "}
+              <span class="text-green-400 font-medium">{user.name}</span>
+            </h2>
+          )}
           <div class="flex justify-center flex-wrap gap-6">
-            {!isLoading && !user && !isAuthenticated && (
+            {!isLoading && !user && (
               <button
                 onClick={() => loginWithRedirect()}
                 class="ml-3 shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
@@ -27,7 +36,7 @@ function Home() {
               </button>
             )}
 
-            {!isLoading && user && isAuthenticated && (
+            {!isLoading && user && (
               <button
                 onClick={() => logout()}
                 class="ml-3 shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"

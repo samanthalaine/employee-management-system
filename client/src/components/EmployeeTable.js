@@ -7,7 +7,7 @@ import UpdateEmployee from "./UpdateEmployee";
 function EmployeeTable() {
   const [employeeList, setEmployeeList] = useState([]);
 
-
+  //renders employees alphabetically (.localeCompareMethod)
   useEffect(() => {
     const getEmployees = async () => {
       await axios.get("http://localhost:3001/employees").then((res) => {
@@ -136,12 +136,15 @@ function EmployeeTable() {
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {employee.position}
                       </td>
+
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        
-                        ${employee.wage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        $
+                        {employee.wage
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <UpdateEmployee employee={employee}/>
+                        <UpdateEmployee employee={employee} />
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <button
