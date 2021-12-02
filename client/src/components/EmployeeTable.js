@@ -10,7 +10,7 @@ function EmployeeTable() {
   //renders employees alphabetically (.localeCompareMethod)
   useEffect(() => {
     const getEmployees = async () => {
-      await axios.get("http://localhost:3001/employees").then((res) => {
+      await axios.get("https://workflow-project-api.herokuapp.com/employees").then((res) => {
         setEmployeeList(res.data.sort((a, b) => a.name.localeCompare(b.name)));
       });
     };
@@ -18,7 +18,7 @@ function EmployeeTable() {
   }, []);
 
   const deleteEmployee = (id) => {
-    axios.delete(`http://localhost:3001/employees/${id}`);
+    axios.delete(`https://workflow-project-api.herokuapp.com/employees/${id}`);
     setEmployeeList(
       employeeList.filter((employee) => employee.employee_id !== id)
     );

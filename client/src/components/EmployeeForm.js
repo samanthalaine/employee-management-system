@@ -12,7 +12,7 @@ function EmployeeForm() {
   const addEmployee = (e) => {
     const employee = { name, age, country, position, wage };
     e.preventDefault();
-    axios.post("http://localhost:3001/create", employee).then(() => {
+    axios.post("https://workflow-project-api.herokuapp.com/create", employee).then(() => {
       console.log("success");
     });
   };
