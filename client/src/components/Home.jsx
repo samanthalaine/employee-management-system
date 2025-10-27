@@ -1,44 +1,50 @@
 import React from "react";
-import { useAuth0 } from "@auth0/auth0-react";
-
-
+import { useAuthBypass } from "../AuthBypassContext.jsx"
 function Home() {
-  const { loginWithRedirect, logout, user, isLoading } = useAuth0();
+  const { user, isLoaded, signOut } = useAuthBypass();
+  
+  const isSignedIn = !!user
+
+  if (!isLoaded) {
+    return <div>Loading user session...</div>;
+  }
 
   return (
     <section class="relative">
       <div class="container flex flex-col-reverse lg:flex-row items-center gap-12 mt-14 lg:mt-28">
         <div class="flex flex-1 flex-col items-center lg:items-start">
-          {!user && (
-            <h2 class="text-purple-600 font-bold text-3xl ml-3 md:text-4 lg:text-5xl text-center lg:text-left mb-6">
-              Employee management made simple.
-            </h2>
+          
+          {!isSignedIn && (
+            <>
+              <h2 class="text-purple-600 font-bold text-3xl ml-3 md:text-4 lg:text-5xl text-center lg:text-left mb-6">
+                Employee management made simple.
+              </h2>
+              <p class="text-blue-500 font-bold text-lg text-center ml-3 lg:text-left mb-6">
+                Log in to use TechWorks employee management system.
+              </p>
+            </>
           )}
 
-          {!user && (
-            <p class="text-blue-500 font-bold text-lg text-center ml-3 lg:text-left mb-6">
-              Log in to use TechWorks employee management system.
-            </p>
-          )}
-          {user && (
+          {isSignedIn && (
             <h2 class="text-blue-600 font-bold text-2xl ml-3 md:text-4 lg:text-5xl text-center lg:text-left mb-6">
               Welcome! You are currently logged in as{" "}
-              <span class="text-green-400 font-medium">{user.name}</span>
+              <span class="text-green-400 font-medium">{user.fullName || user.primaryEmailAddress}</span>
             </h2>
           )}
+          
           <div class="flex justify-center flex-wrap gap-6">
-            {!isLoading && !user && (
-              <button
-                onClick={() => loginWithRedirect()}
+            {!isSignedIn && (
+              <a
+                href="/sign-in" 
                 class="ml-3 shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
               >
                 Login
-              </button>
+              </a>
             )}
 
-            {!isLoading && user && (
+            {isSignedIn && (
               <button
-                onClick={() => logout()}
+                onClick={() => signOut()}
                 class="ml-3 shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
               >
                 Logout
@@ -53,7 +59,7 @@ function Home() {
             src="https://ik.imagekit.io/tnbl3hlvz/peoplearoundglobe.png?updatedAt=1761594950671"
             alt="People around a globe"
           />
-        </div>
+        </div>  
       </div>
     </section>
   );

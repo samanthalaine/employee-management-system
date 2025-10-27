@@ -1,9 +1,16 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuthBypass } from "../AuthBypassContext.jsx";
 
 function MobileNavbarMenu() {
-  const { loginWithRedirect, logout, user } = useAuth0();
+  const { user, isLoaded, signOut } = useAuthBypass();
+  
+  const isSignedIn = !!user;
+
+  if (!isLoaded) {
+    return null; 
+  }
+
   return (
     <div
       class="top-navbar w-full lg:inline-flex lg:flex-grow lg:w-auto"
@@ -16,15 +23,19 @@ function MobileNavbarMenu() {
         >
           <span>Home</span>
         </Link>
-        {!user && (
-          <span
-            onClick={() => loginWithRedirect()}
+        
+        {/* 3. Logic for UNAUTHENTICATED user (Replaced !user) */}
+        {!isSignedIn && (
+          <Link
+            to="/sign-in" // Direct link to your Sign-In page
             class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white items-center justify-center hover:bg-white hover:text-purple-800"
           >
             Login
-          </span>
+          </Link>
         )}
-        {user && (
+        
+        {/* 4. Logic for AUTHENTICATED user (Replaced user &&) */}
+        {isSignedIn && (
           <Link
             to="/employeeform"
             class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white items-center justify-center hover:bg-white hover:text-purple-800"
@@ -32,7 +43,7 @@ function MobileNavbarMenu() {
             <span>Add Employee</span>
           </Link>
         )}
-        {user && (
+        {isSignedIn && (
           <Link
             to="/employeetable"
             class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white items-center justify-center hover:bg-white hover:text-purple-800"
@@ -40,10 +51,10 @@ function MobileNavbarMenu() {
             <span>View All Employees</span>
           </Link>
         )}
-        {user && (
+        {isSignedIn && (
           <span
-            onClick={() => logout()}
-            class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white items-center justify-center hover:bg-white hover:text-purple-800"
+            onClick={() => signOut()} // Replaced Auth0 logout with mock signOut
+            class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white items-center justify-center hover:bg-white hover:text-purple-800 cursor-pointer"
           >
             Logout
           </span>

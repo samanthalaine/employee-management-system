@@ -15,7 +15,7 @@ export default function UpdateEmployee({ employee }) {
     e.preventDefault();
     await axios
       .put(
-        `https://workflow-project-api.herokuapp.com/employees/${employee.employee_id}`,
+        `http://localhost:3001/employees/${employee.employee_id}`,
         updatedInfo
       )
       .then((res) => {

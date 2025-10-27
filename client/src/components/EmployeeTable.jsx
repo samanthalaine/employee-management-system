@@ -1,24 +1,33 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import EmployeeForm from "./EmployeeForm";
 import UpdateEmployee from "./UpdateEmployee";
 
 function EmployeeTable() {
   const [employeeList, setEmployeeList] = useState([]);
 
   //renders employees alphabetically (.localeCompareMethod)
-  useEffect(() => {
+useEffect(() => {
     const getEmployees = async () => {
-      await axios.get("https://workflow-project-api.herokuapp.com/employees").then((res) => {
-        setEmployeeList(res.data.sort((a, b) => a.name.localeCompare(b.name)));
-      });
+      try {
+        const response = await axios.get("http://localhost:3001/employees");
+        const sortedEmployees = response.data.sort((a, b) => 
+          a.name.localeCompare(b.name)
+        );
+        setEmployeeList(sortedEmployees);
+
+      } catch (err) {
+        console.error("Error fetching employees:", err.message);
+        if (err.response) {
+            console.error("Server Response Data:", err.response.data);
+        }
+      }
     };
     getEmployees();
   }, []);
 
   const deleteEmployee = (id) => {
-    axios.delete(`https://workflow-project-api.herokuapp.com/employees/${id}`);
+    axios.delete(`http://localhost:3001/employees/${id}`);
     setEmployeeList(
       employeeList.filter((employee) => employee.employee_id !== id)
     );

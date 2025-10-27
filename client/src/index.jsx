@@ -1,11 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "./assets/main.css";
-import App from "./App";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App.jsx';
+import { BrowserRouter } from 'react-router-dom'; 
 
-ReactDOM.render(
+import { AuthBypassProvider } from './AuthBypassContext.jsx'; 
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
+    <AuthBypassProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </AuthBypassProvider>
+  </React.StrictMode>
 );

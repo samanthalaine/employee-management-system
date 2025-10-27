@@ -1,23 +1,28 @@
-import React from 'react';
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import MobileNavbarMenu from "./MobileNavbarMenu";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuthBypass } from "../AuthBypassContext.jsx";
 
 function Navbar() {
   const [isOpen, setisOpen] = useState(false);
-  const { loginWithRedirect, logout, user, isLoading, isAuthenticated } =
-    useAuth0();
+  
+  const { user, isLoaded, signOut } = useAuthBypass(); 
+
+  const isSignedIn = !!user;
 
   const showMenu = () => {
     isOpen ? setisOpen(false) : setisOpen(true);
   };
 
+  if (!isLoaded) {
+    return null; 
+  }
+
   // ternary statement to show mobile navbar or desktop navbar depending on screen size
   return (
     <div>
-      <nav class="flex items-center bg-purple-900 p-3 flex-wrap">
-        <Link to="/" class="p-2 mr-4 inline-flex items-center">
+      <nav className="flex items-center bg-purple-900 p-3 flex-wrap">
+        <Link to="/" className="p-2 mr-4 inline-flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6 text-gray-200"
@@ -73,15 +78,19 @@ function Navbar() {
               >
                 <span>Home</span>
               </Link>
-              {!user && (
-                <span
-                  onClick={() => loginWithRedirect()}
+              
+              {/* 3. Replaced !user with !isSignedIn (or !user) and loginWithRedirect with Link */}
+              {!isSignedIn && (
+                <Link
+                  to="/sign-in" // Direct link to your Sign-In page
                   class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white items-center justify-center hover:bg-white hover:text-purple-800"
                 >
                   Login
-                </span>
+                </Link>
               )}
-              {user && (
+              
+              {/* 4. Replaced user && with isSignedIn (or user &&) */}
+              {isSignedIn && (
                 <Link
                   to="/employeeform"
                   class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white items-center justify-center hover:bg-white hover:text-purple-800"
@@ -89,7 +98,7 @@ function Navbar() {
                   <span>Add Employee</span>
                 </Link>
               )}
-              {user && (
+              {isSignedIn && (
                 <Link
                   to="/employeetable"
                   class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white items-center justify-center hover:bg-white hover:text-purple-800"
@@ -97,10 +106,10 @@ function Navbar() {
                   <span>View All Employees</span>
                 </Link>
               )}
-              {user && (
+              {isSignedIn && (
                 <span
-                  onClick={() => logout()}
-                  class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white items-center justify-center hover:bg-white hover:text-purple-800"
+                  onClick={() => signOut()} // Replaced Auth0 logout with mock signOut
+                  class="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white items-center justify-center hover:bg-white hover:text-purple-800 cursor-pointer"
                 >
                   Logout
                 </span>

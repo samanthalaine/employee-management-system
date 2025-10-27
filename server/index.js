@@ -5,8 +5,33 @@ const pool = require("./db");
 const dotenv = require("dotenv");
 dotenv.config();
 
-//middleware
-app.use(cors());
+// 1. Define the allowed origins for CORS
+const allowedOrigins = [
+  // Your Heroku deployed frontend URL (you should add this when you deploy the client)
+  "https://workflow-project-fe.herokuapp.com", 
+  // 🔑 Add your local development environment
+  "http://localhost:5173",
+  // Add any other local/test ports you might use
+  "http://localhost:3001" 
+];
+
+// 2. Configure CORS options
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl) or if the origin is explicitly allowed
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  // Necessary if you use cookies, sessions, or authorization headers
+  credentials: true 
+};
+
+// middleware
+// 3. Use the configured CORS middleware
+app.use(cors(corsOptions));
 app.use(express.json()); //req.body
 
 app.get("/", (req, res)=>{
@@ -94,5 +119,3 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
 });
-
-

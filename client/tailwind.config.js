@@ -1,13 +1,8 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-
-  // 🔑 1. Replace 'purge' with 'content' and define files to scan
-  content: [
-    "./index.html",
-    // This line tells Tailwind to scan all your component files for class names
-    "./src/**/*.{js,ts,jsx,tsx}", 
-  ],
+  purge: [],
+  presets: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
     screens: {
