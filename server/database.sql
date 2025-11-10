@@ -1,5 +1,3 @@
-CREATE DATABASE employeesystem;
-
 CREATE TABLE employees(
     employee_id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
