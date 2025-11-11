@@ -6,7 +6,7 @@ export default function DeleteEmployee({ employee, onDeleteConfirm }) {
 
   const employeeName = useMemo(() => employee?.name ?? "this employee", [employee]);
 
-  const open = () => setShowModal(true);
+  const open = () => setShowModal(true)
 
   const close = useCallback(() => {
     if (deleting) return; // prevent closing mid-delete
