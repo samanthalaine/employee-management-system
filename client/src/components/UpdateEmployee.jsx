@@ -1,164 +1,218 @@
-import React from 'react';
-import { useState } from "react";
+import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import axios from "axios";
 
 export default function UpdateEmployee({ employee }) {
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState(employee.name);
-  const [age, setAge] = useState(employee.age);
+  const [age, setAge] = useState(String(employee.age ?? ""));
   const [country, setCountry] = useState(employee.country);
   const [position, setPosition] = useState(employee.position);
-  const [wage, setWage] = useState(employee.wage);
+  const [wage, setWage] = useState(String(employee.wage ?? ""));
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+
+  // Simple validation
+  const isValid = useMemo(() => {
+    const ageNum = Number(age);
+    const wageNum = Number(wage);
+    return (
+      name.trim() &&
+      country.trim() &&
+      position.trim() &&
+      Number.isFinite(ageNum) && ageNum > 0 &&
+      Number.isFinite(wageNum) && wageNum > 0
+    );
+  }, [name, age, country, position, wage]);
+
+  // Open/close helpers
+  const open = () => {
+    setShowModal(true);
+    setError("");
+  };
+
+  const close = useCallback(() => {
+    setShowModal(false);
+    // reset fields to original values on close
+    setName(employee.name);
+    setAge(String(employee.age ?? ""));
+    setCountry(employee.country);
+    setPosition(employee.position);
+    setWage(String(employee.wage ?? ""));
+    setSaving(false);
+    setError("");
+  }, [employee]);
 
   const editEmployee = async (e) => {
-    const updatedInfo = { name, age, country, position, wage };
     e.preventDefault();
-    await axios
-      .put(
-        `http://localhost:3001/employees/${employee.employee_id}`,
-        updatedInfo
-      )
-      .then((res) => {
-        console.log("success");
+    if (!isValid || saving) return;
+    setSaving(true);
+    setError("");
+
+    try {
+      await axios.put(`http://localhost:3001/employees/${employee.employee_id}`, {
+        name: name.trim(),
+        age: Number(age),
+        country: country.trim(),
+        position: position.trim(),
+        wage: Number(wage),
       });
-    window.location = "/employeetable";
+      // Prefer lifting state up instead of reloading; for now, close + reload
+      setShowModal(false);
+      window.location = "/employeetable";
+    } catch (err) {
+      console.error(err);
+      setError("Could not save changes. Please try again.");
+      setSaving(false);
+    }
   };
 
   return (
     <>
       <button
-        className="shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
         type="button"
-        onClick={() => setShowModal(true)}
+        onClick={open}
+        className="inline-flex items-center rounded-lg bg-purple-600 px-3 py-2 text-white font-semibold shadow hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
       >
         Update
       </button>
-      {showModal ? (
+
+      {showModal && (
         <>
-          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-auto my-6 mx-auto max-w-3xl">
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                  <h3 className="text-2xl font-semibold">
-                    {`Edit ${employee.name}'s Details`}
-                  </h3>
-                  <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
-                  >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
-                  </button>
-                </div>
+          <div
+            className="fixed inset-0 z-40 bg-black/40"
+            onClick={close}
+            aria-hidden="true"
+          />
 
-                <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                  <div class="mb-4">
-                    <label
-                      class="block text-gray-700 text-sm font-bold mb-2"
-                      for="username"
-                    >
-                      Name
-                    </label>
-                    <input
-                      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      type="text"
-                      placeholder="Name"
-                      onChange={(e) => setName(e.target.value)}
-                      value={name}
-                    />
-                  </div>
-                  <div class="mb-4">
-                    <label
-                      class="block text-gray-700 text-sm font-bold mb-2"
-                      for="username"
-                    >
-                      Age
-                    </label>
-                    <input
-                      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      type="number"
-                      placeholder="Age"
-                      onChange={(e) => setAge(e.target.value)}
-                      value={age}
-                    />
-                  </div>
-                  <div class="mb-4">
-                    <label
-                      class="block text-gray-700 text-sm font-bold mb-2"
-                      for="username"
-                    >
-                      Country
-                    </label>
-                    <input
-                      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      type="text"
-                      placeholder="Country"
-                      onChange={(e) => setCountry(e.target.value)}
-                      value={country}
-                    />
-                  </div>
-                  <div class="mb-4">
-                    <label
-                      class="block text-gray-700 text-sm font-bold mb-2"
-                      for="username"
-                    >
-                      Position
-                    </label>
-                    <input
-                      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      type="text"
-                      placeholder="Position"
-                      onChange={(e) => setPosition(e.target.value)}
-                      value={position}
-                    />
-                  </div>
-                  <div class="mb-4">
-                    <label
-                      class="block text-gray-700 text-sm font-bold mb-2"
-                      for="username"
-                    >
-                      Wage
-                    </label>
-                    <input
-                      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      type="number"
-                      placeholder="Wage"
-                      onChange={(e) => setWage(e.target.value)}
-                      value={wage}
-                    />
-                  </div>
-                </form>
-
-                <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-                  <button
-                    className="bg-red-600 text-white active:bg-red-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={() => {
-                      setShowModal(false);
-                      setName(employee.name);
-                      setAge(employee.age);
-                      setCountry(employee.country);
-                      setPosition(employee.position);
-                      setWage(employee.wage);
-                    }}
-                  >
-                    Close
-                  </button>
-                  <button
-                    className="bg-blue-600 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={(e) => editEmployee(e)}
-                  >
-                    Save Changes
-                  </button>
-                </div>
+          <div
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+            role="dialog"
+            aria-modal="true"
+          >
+            {/* Dialog: mobile sheet, centered on sm+ */}
+            <div
+              className="w-full sm:w-auto sm:max-w-2xl bg-white shadow-xl
+                         rounded-t-2xl sm:rounded-xl
+                         max-h-[90vh] overflow-hidden
+                         translate-y-0"
+              onClick={(e) => e.stopPropagation()} // prevent backdrop close
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-4 py-3 sm:px-6 border-b">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
+                  Edit {employee.name}'s Details
+                </h3>
+                <button
+                  type="button"
+                  onClick={close}
+                  aria-label="Close"
+                  className="rounded p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <span className="block text-2xl leading-none">×</span>
+                </button>
               </div>
+
+              <form onSubmit={editEmployee} className="overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
+                {error && (
+                  <div className="mb-4 rounded border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+                    {error}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="sm:col-span-2">
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Full Name</label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="Jane Doe"
+                      required
+                      autoComplete="name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Age</label>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min="1"
+                      step="1"
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="30"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Country</label>
+                    <input
+                      type="text"
+                      value={country}
+                      onChange={(e) => setCountry(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="United States"
+                      required
+                      autoComplete="country-name"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Position</label>
+                    <input
+                      type="text"
+                      value={position}
+                      onChange={(e) => setPosition(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="Software Engineer"
+                      required
+                      autoComplete="organization-title"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="mb-1 block text-sm font-medium text-gray-700">Wage (annual)</label>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min="1"
+                      step="1"
+                      value={wage}
+                      onChange={(e) => setWage(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="55000"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={close}
+                    className="w-full sm:w-auto rounded-lg px-4 py-2 font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!isValid || saving}
+                    className={`w-full sm:w-auto rounded-lg px-4 py-2 font-semibold text-white shadow focus:outline-none focus:ring-2 focus:ring-offset-2
+                      ${isValid && !saving ? "bg-purple-600 hover:bg-purple-500 focus:ring-purple-500" : "bg-purple-300 cursor-not-allowed"}`}
+                  >
+                    {saving ? "Saving…" : "Save Changes"}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
-      ) : null}
+      )}
     </>
   );
 }
