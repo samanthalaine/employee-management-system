@@ -10,6 +10,8 @@ function EmployeeForm() {
   const [showAlert, setShowAlert] = useState(false);
   const [error, setError] = useState("");
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+
   const isValid = useMemo(() => {
     const ageNum = Number(age);
     const wageNum = Number(wage);
@@ -32,7 +34,7 @@ function EmployeeForm() {
     }
 
     try {
-      await axios.post("http://localhost:3001/create", {
+      await axios.post(`${API_BASE_URL}/create`, {
         name: name.trim(),
         age: Number(age),
         country: country.trim(),

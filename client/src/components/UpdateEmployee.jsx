@@ -11,6 +11,7 @@ export default function UpdateEmployee({ employee }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
   // Simple validation
   const isValid = useMemo(() => {
@@ -50,7 +51,7 @@ export default function UpdateEmployee({ employee }) {
     setError("");
 
     try {
-      await axios.put(`http://localhost:3001/employees/${employee.employee_id}`, {
+      await axios.put(`${API_BASE_URL}/employees/${employee.employee_id}`, {
         name: name.trim(),
         age: Number(age),
         country: country.trim(),

@@ -5,14 +5,9 @@ const pool = require("./db");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const allowedOrigins = [
-
-  "https://workflow-project-fe.herokuapp.com", 
-
-  "http://localhost:5173",
-
-  "http://localhost:3001" 
-];
+const allowedOrigins = process.env.CORS_ORIGIN 
+  ? process.env.CORS_ORIGIN.split(',') 
+  : ["http://localhost:5173", "http://localhost:3001"];
 
 // 2. Configure CORS options
 const corsOptions = {

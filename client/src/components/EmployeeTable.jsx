@@ -12,10 +12,12 @@ const currency = new Intl.NumberFormat("en-US", {
 function EmployeeTable() {
   const [employeeList, setEmployeeList] = useState([]);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+
   useEffect(() => {
     const getEmployees = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3001/employees");
+        const { data } = await axios.get(`${API_BASE_URL}/employees`);
         const sorted = data.sort((a, b) => a.name.localeCompare(b.name));
         setEmployeeList(sorted);
       } catch (err) {
@@ -28,7 +30,7 @@ function EmployeeTable() {
 
   const deleteEmployee = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/employees/${id}`);
+      await axios.delete(`${API_BASE_URL}/employees/${id}`);
       setEmployeeList((prev) => prev.filter((e) => e.employee_id !== id));
     } catch (err) {
       console.error("Delete failed", err);
