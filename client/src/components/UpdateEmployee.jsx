@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
-export default function UpdateEmployee({ employee }) {
+export default function UpdateEmployee({ employee, onUpdated }) {
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState(employee.name);
   const [age, setAge] = useState(String(employee.age ?? ""));
@@ -11,7 +11,18 @@ export default function UpdateEmployee({ employee }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+  // MSW (mock) vs real API toggle
+  const useMock = import.meta.env.VITE_USE_MSW === "true";
+  const API_BASE = useMock ? "" : (import.meta.env.VITE_API_URL || "http://localhost:3001");
+
+  const http = useMemo(
+    () =>
+      axios.create({
+        baseURL: API_BASE,
+        timeout: 15000,
+      }),
+    [API_BASE]
+  );
 
   // Simple validation
   const isValid = useMemo(() => {
@@ -21,8 +32,10 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001
       name.trim() &&
       country.trim() &&
       position.trim() &&
-      Number.isFinite(ageNum) && ageNum > 0 &&
-      Number.isFinite(wageNum) && wageNum > 0
+      Number.isFinite(ageNum) &&
+      ageNum > 0 &&
+      Number.isFinite(wageNum) &&
+      wageNum > 0
     );
   }, [name, age, country, position, wage]);
 
@@ -32,9 +45,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001
     setError("");
   };
 
-  const close = useCallback(() => {
-    setShowModal(false);
-    // reset fields to original values on close
+  const resetToOriginal = useCallback(() => {
     setName(employee.name);
     setAge(String(employee.age ?? ""));
     setCountry(employee.country);
@@ -44,6 +55,19 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001
     setError("");
   }, [employee]);
 
+  const close = useCallback(() => {
+    setShowModal(false);
+    resetToOriginal();
+  }, [resetToOriginal]);
+
+  // Close on ESC
+  useEffect(() => {
+    if (!showModal) return;
+    const onKey = (e) => e.key === "Escape" && close();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [showModal, close]);
+
   const editEmployee = async (e) => {
     e.preventDefault();
     if (!isValid || saving) return;
@@ -51,19 +75,24 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001
     setError("");
 
     try {
-      await axios.put(`${API_BASE_URL}/employees/${employee.employee_id}`, {
+      const { data } = await http.put(`/employees/${employee.employee_id}`, {
         name: name.trim(),
         age: Number(age),
         country: country.trim(),
         position: position.trim(),
         wage: Number(wage),
       });
-      // Prefer lifting state up instead of reloading; for now, close + reload
-      setShowModal(false);
-      window.location = "/employeetable";
+
+      // Prefer lifting state up: notify parent if provided
+      if (typeof onUpdated === "function") {
+        onUpdated(data);
+      }
+
+      setShowModal(false); // close
     } catch (err) {
       console.error(err);
       setError("Could not save changes. Please try again.");
+    } finally {
       setSaving(false);
     }
   };
@@ -80,24 +109,22 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001
 
       {showModal && (
         <>
+          {/* Backdrop */}
           <div
             className="fixed inset-0 z-40 bg-black/40"
             onClick={close}
             aria-hidden="true"
           />
 
+          {/* Dialog */}
           <div
             className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
             role="dialog"
             aria-modal="true"
           >
-            {/* Dialog: mobile sheet, centered on sm+ */}
             <div
-              className="w-full sm:w-auto sm:max-w-2xl bg-white shadow-xl
-                         rounded-t-2xl sm:rounded-xl
-                         max-h-[90vh] overflow-hidden
-                         translate-y-0"
-              onClick={(e) => e.stopPropagation()} // prevent backdrop close
+              className="w-full sm:w-auto sm:max-w-2xl bg-white shadow-xl rounded-t-2xl sm:rounded-xl max-h-[90vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 sm:px-6 border-b">
@@ -114,6 +141,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001
                 </button>
               </div>
 
+              {/* Body */}
               <form onSubmit={editEmployee} className="overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
                 {error && (
                   <div className="mb-4 rounded border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -192,6 +220,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001
                   </div>
                 </div>
 
+                {/* Footer */}
                 <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
                   <button
                     type="button"
@@ -203,8 +232,11 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001
                   <button
                     type="submit"
                     disabled={!isValid || saving}
-                    className={`w-full sm:w-auto rounded-lg px-4 py-2 font-semibold text-white shadow focus:outline-none focus:ring-2 focus:ring-offset-2
-                      ${isValid && !saving ? "bg-purple-600 hover:bg-purple-500 focus:ring-purple-500" : "bg-purple-300 cursor-not-allowed"}`}
+                    className={`w-full sm:w-auto rounded-lg px-4 py-2 font-semibold text-white shadow focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                      isValid && !saving
+                        ? "bg-purple-600 hover:bg-purple-500 focus:ring-purple-500"
+                        : "bg-purple-300 cursor-not-allowed"
+                    }`}
                   >
                     {saving ? "Saving…" : "Save Changes"}
                   </button>
