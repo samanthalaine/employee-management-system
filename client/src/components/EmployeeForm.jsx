@@ -37,6 +37,10 @@ function EmployeeForm() {
           </span>
         </div>
       ) : null}
+
+      <h2 className="text-2xl font-semibold text-gray-800 mt-8 ml-4 mb-8 max-w-sm">
+    Add New Employee
+  </h2>
       <form onSubmit={addEmployee} class="w-full max-w-sm mt-5">
         <div class="md:flex md:items-center mb-6">
           <div class="md:w-1/3">
