@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import UpdateEmployee from "./UpdateEmployee";
+import DeleteEmployee from "./DeleteEmployee"; 
 
 function EmployeeTable() {
   const [employeeList, setEmployeeList] = useState([]);
@@ -76,6 +77,16 @@ useEffect(() => {
                 >
                   Wage
                 </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -112,12 +123,10 @@ useEffect(() => {
                     <UpdateEmployee employee={employee} />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button
-                      onClick={() => deleteEmployee(employee.employee_id)}
-                      className="shadow bg-red-500 hover:bg-red-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-                    >
-                      Delete
-                    </button>
+                   <DeleteEmployee 
+                      employee={employee} 
+                      onDeleteConfirm={deleteEmployee}
+                    />
                   </td>
                 </tr>
               ))}
