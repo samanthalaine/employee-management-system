@@ -1,135 +1,178 @@
-import React from 'react';
-import { useState } from "react";
+import React, { useState, useMemo } from "react";
 import axios from "axios";
 
 function EmployeeForm() {
   const [name, setName] = useState("");
-  const [age, setAge] = useState(0);
+  const [age, setAge] = useState("");
   const [country, setCountry] = useState("");
   const [position, setPosition] = useState("");
-  const [wage, setWage] = useState(0);
+  const [wage, setWage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const [error, setError] = useState("");
 
-  const addEmployee = (e) => {
-    const employee = { name, age, country, position, wage };
+  const isValid = useMemo(() => {
+    const ageNum = Number(age);
+    const wageNum = Number(wage);
+    return (
+      name.trim() &&
+      country.trim() &&
+      position.trim() &&
+      Number.isFinite(ageNum) && ageNum > 0 &&
+      Number.isFinite(wageNum) && wageNum > 0
+    );
+  }, [name, age, country, position, wage]);
+
+  const addEmployee = async (e) => {
     e.preventDefault();
-    axios.post("http://localhost:3001/create", employee).then(() => {
-      console.log("success");
-    });
+    setError("");
+
+    if (!isValid) {
+      setError("Please complete all fields with valid values.");
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:3001/create", {
+        name: name.trim(),
+        age: Number(age),
+        country: country.trim(),
+        position: position.trim(),
+        wage: Number(wage),
+      });
+
+      setShowAlert(true);
+      setName(""); setAge(""); setCountry(""); setPosition(""); setWage("");
+      setTimeout(() => setShowAlert(false), 2500);
+    } catch (err) {
+      console.error(err);
+      setError("Could not add employee. Please try again.");
+    }
   };
 
   return (
-    <>
-      {showAlert ? (
+    <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-xl mx-auto">
+      <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
+        Add New Employee
+      </h2>
+
+      {showAlert && (
         <div
-          class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+          className="mb-4 bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded"
+          role="status"
+          aria-live="polite"
+        >
+          <strong className="font-semibold">Success:</strong>{" "}
+          New employee was added.
+        </div>
+      )}
+
+      {error && (
+        <div
+          className="mb-4 bg-red-100 border border-red-300 text-red-800 px-4 py-3 rounded"
           role="alert"
         >
-          <strong class="font-bold">{"Success! "}</strong>
-          <span class="block sm:inline">New employee was added.</span>
-          <span
-            onClick={setTimeout(() => {
-              setShowAlert(false);
-            }, 3000)}
-            class="absolute font-semibold text-xl top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
-          >
-            ×
-          </span>
+          {error}
         </div>
-      ) : null}
+      )}
 
-      <h2 className="text-2xl font-semibold text-gray-800 mt-8 ml-4 mb-8 max-w-sm">
-    Add New Employee
-  </h2>
-      <form onSubmit={addEmployee} class="w-full max-w-sm mt-5">
-        <div class="md:flex md:items-center mb-6">
-          <div class="md:w-1/3">
-            <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+      <form onSubmit={addEmployee} className="space-y-4">
+        {/* Mobile-first: labels above inputs. On md+, two columns for denser layout */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Full Name
             </label>
-          </div>
-          <div class="md:w-2/3">
             <input
-              class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               type="text"
               placeholder="Name"
+              value={name}
               onChange={(e) => setName(e.target.value)}
+              required
+              autoComplete="name"
             />
           </div>
-        </div>
-        <div class="md:flex md:items-center mb-6">
-          <div class="md:w-1/3">
-            <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Age
             </label>
-          </div>
-          <div class="md:w-2/3">
             <input
-              class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               type="number"
+              inputMode="numeric"
+              min="1"
+              step="1"
               placeholder="Age"
+              value={age}
               onChange={(e) => setAge(e.target.value)}
+              required
             />
           </div>
-        </div>
-        <div class="md:flex md:items-center mb-6">
-          <div class="md:w-1/3">
-            <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Country
             </label>
-          </div>
-          <div class="md:w-2/3">
             <input
-              class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               type="text"
               placeholder="Country"
+              value={country}
               onChange={(e) => setCountry(e.target.value)}
+              required
+              autoComplete="country-name"
             />
           </div>
-        </div>
-        <div class="md:flex md:items-center mb-6">
-          <div class="md:w-1/3">
-            <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Position
             </label>
-          </div>
-          <div class="md:w-2/3">
             <input
-              class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               type="text"
               placeholder="Position"
+              value={position}
               onChange={(e) => setPosition(e.target.value)}
+              required
+              autoComplete="organization-title"
             />
           </div>
-        </div>
-        <div class="md:flex md:items-center mb-6">
-          <div class="md:w-1/3">
-            <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Wage (annual)
             </label>
-          </div>
-          <div class="md:w-2/3">
             <input
-              class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               type="number"
+              inputMode="numeric"
+              min="1"
+              step="1"
               placeholder="Wage"
+              value={wage}
               onChange={(e) => setWage(e.target.value)}
+              required
             />
           </div>
         </div>
-        <div class="md:flex md:items-center">
-          <div class="md:w-1/3"></div>
-          <div class="md:w-2/3">
-            <button
-              onClick={() => setShowAlert(true)}
-              class="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-            >
-              Add Employee
-            </button>
-          </div>
+
+        <div className="pt-2">
+          <button
+            type="submit"
+            disabled={!isValid}
+            className={`w-full sm:w-auto inline-flex justify-center items-center rounded-lg px-4 py-2 text-white font-semibold shadow focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+              isValid
+                ? "bg-purple-600 hover:bg-purple-500 focus:ring-purple-500"
+                : "bg-gray-300 cursor-not-allowed"
+            }`}
+          >
+            Add Employee
+          </button>
         </div>
       </form>
-    </>
+    </div>
   );
 }
 
