@@ -60,9 +60,8 @@ export default function UpdateEmployee({ employee }) {
         position: position.trim(),
         wage: Number(wage),
       });
-      // Prefer lifting state up instead of reloading; for now, close + reload
       setShowModal(false);
-      window.location = "/employeetable";
+      window.location.reload();
     } catch (err) {
       console.error(err);
       setError("Could not save changes. Please try again.");
