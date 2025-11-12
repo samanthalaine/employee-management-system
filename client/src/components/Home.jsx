@@ -1,65 +1,76 @@
 import React from "react";
-import { useAuthBypass } from "../AuthBypassContext.jsx"
+import { Link } from "react-router-dom";
+import { useAuthBypass } from "../AuthBypassContext.jsx";
+
 function Home() {
   const { user, isLoaded, signOut } = useAuthBypass();
-  
-  const isSignedIn = !!user
+  const isSignedIn = !!user;
 
   if (!isLoaded) {
-    return <div>Loading user session...</div>;
+    return (
+      <div className="px-4 py-12 text-center text-gray-600">
+        Loading user session…
+      </div>
+    );
   }
 
   return (
-    <section class="relative">
-      <div class="container flex flex-col-reverse lg:flex-row items-center gap-12 mt-14 lg:mt-28">
-        <div class="flex flex-1 flex-col items-center lg:items-start">
-          
-          {!isSignedIn && (
-            <>
-              <h2 class="text-purple-600 font-bold text-3xl ml-3 md:text-4 lg:text-5xl text-center lg:text-left mb-6">
-                Employee management made simple.
-              </h2>
-              <p class="text-blue-500 font-bold text-lg text-center ml-3 lg:text-left mb-6">
-                Log in to use TechWorks employee management system.
-              </p>
-            </>
-          )}
-
-          {isSignedIn && (
-            <h2 class="text-blue-600 font-bold text-2xl ml-3 md:text-4 lg:text-5xl text-center lg:text-left mb-6">
-              Welcome! You are currently logged in as{" "}
-              <span class="text-green-400 font-medium">{user.fullName || user.primaryEmailAddress}</span>
-            </h2>
-          )}
-          
-          <div class="flex justify-center flex-wrap gap-6">
-            {!isSignedIn && (
-              <a
-                href="/sign-in" 
-                class="ml-3 shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-              >
-                Login
-              </a>
+    <section className="relative">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-16 lg:pt-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          {/* Text column */}
+          <div className="order-2 lg:order-1">
+            {!isSignedIn ? (
+              <>
+                <h1 className="text-balance text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-purple-700">
+                  Employee management made simple.
+                </h1>
+                <p className="mt-4 text-base sm:text-lg text-blue-600 font-semibold">
+                  Log in to use TechWorks employee management system.
+                </p>
+              </>
+            ) : (
+              <h1 className="text-balance text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-blue-700">
+                Welcome! You’re logged in as{" "}
+                <span className="text-green-500 font-semibold">
+                  {user.fullName || user.primaryEmailAddress}
+                </span>
+              </h1>
             )}
 
-            {isSignedIn && (
-              <button
-                onClick={() => signOut()}
-                class="ml-3 shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-              >
-                Logout
-              </button>
-            )}
+            {/* Actions */}
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+              {!isSignedIn ? (
+                <Link
+                  to="/sign-in"
+                  className="inline-flex w-full sm:w-auto items-center justify-center rounded-lg bg-purple-600 px-5 py-2.5 text-white font-semibold shadow hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                >
+                  Login
+                </Link>
+              ) : (
+                <button
+                  onClick={() => signOut()}
+                  className="inline-flex w-full sm:w-auto items-center justify-center rounded-lg bg-purple-600 px-5 py-2.5 text-white font-semibold shadow hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                >
+                  Logout
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Illustration column */}
+          <div className="order-1 lg:order-2">
+            <div className="mx-auto w-full max-w-md sm:max-w-lg lg:max-w-none">
+              <img
+                className="w-full h-auto object-contain rounded-xl shadow-sm"
+                src="https://ik.imagekit.io/tnbl3hlvz/peoplearoundglobe.png?updatedAt=1761594950671"
+                alt="People around a globe"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
           </div>
         </div>
-
-        <div class="flex justify-center flex-1 mb-10 md:mb-16 lg:mb-0 z-10">
-          <img
-            class="w-5/6 h-5/6 sm:w-3/4 sm:h-3/4 md:w-full md:h-full"
-            src="https://ik.imagekit.io/tnbl3hlvz/peoplearoundglobe.png?updatedAt=1761594950671"
-            alt="People around a globe"
-          />
-        </div>  
       </div>
     </section>
   );

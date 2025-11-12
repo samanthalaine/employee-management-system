@@ -8,7 +8,7 @@ export type Employee = {
 };
 
 const defaultEmployees: Employee[] = [
-  { employee_id: 1, name: "Jane Doe", age: 30, country: "USA", position: "Engineer", wage: 85000 },
+  { employee_id: 1, name: "Kayla Winston", age: 30, country: "USA", position: "Engineer", wage: 85000 },
   { employee_id: 2, name: "Sam Lee", age: 27, country: "Canada", position: "Designer", wage: 72000 },
 ];
 
